@@ -1,4 +1,4 @@
-# mengene
+# mengene [![Build Status](https://travis-ci.org/tetsuo/mengene.svg?branch=master)](https://travis-ci.org/tetsuo/mengene)
 
 mangle/unmangle property names.
 
