@@ -1,44 +1,57 @@
 
-var _ = require('underscore');
+exports.compress = compress;
+exports.decompress = decompress;
 
-exports.unmangle = unmangle;
-exports.mangle = mangle;
-
-function unmangle (attrs, keys) {
-  if (!attrs || !keys)
-    return;
-  keys = _.clone(keys).sort();
-  if (keys.length > 0) {
-    var mk, p, amk = _.keys(attrs).sort(), ret = {};
-    while ((mk = amk.shift()) != null) {
-      p = new RegExp('^' + mk + '.+');
-      ret[_.find(keys, function (key, index) {
-        if (key.match(p))
-          return keys.splice(index, 1)[0];
-      }) || mk] = attrs[mk];
-    }
-    return ret;
-  }
+function with_pat (pat) {
+	return function (ret, curr, i) {
+		if (curr.match(pat)) ret.push(i);
+		return ret;
+	}
 }
 
-function mangle (attrs, options) {
-  if (!attrs)
-    return;
-  options || (options = {});
-  var k, v, i = 1, ret = {};
-  var key, keys = _.keys(attrs).sort();
-  while ((key = keys.shift()) != null) {
-    do {
-      k = key.substring(0, i);
-      i++;
-    } while (ret.hasOwnProperty(k));
+function decompress (attrs, keynames) {
+	keynames = keynames.sort();
+	var k, ks = Object.keys(attrs).sort(), ret = {}, found, i;
 
-    v = attrs[key];
-    if (_.isArray(v) && options.stringifyArrays)
-      ret[k] = v.join(',');
-    else
-      ret[k] = v;
-    i = 1;
-  }
-  return options.keysonly ? _.keys(ret).sort() : ret;
+	while ((k = ks.pop()) != null) {
+		found = keynames.reduce(with_pat(new RegExp('^' + k + '.+')), []);
+		if (found.length) {
+			i = found[found.length-1];
+			ret[keynames[i]] = attrs[k];
+			keynames.splice(i, 1);
+		}
+		else
+			ret[k] = attrs[k];
+	}
+
+	return ret;
 }
+
+function compress (attrs, opts) {
+	if (!attrs) return;
+	opts || (opts = {});
+
+	var k, v, i = 1, ret = {};
+	var key, keys = Object.keys(attrs).sort();
+
+	while ((key = keys.shift()) != null) {
+		do {
+			k = key.substring(0, i);
+			++i;
+		} while (ret.hasOwnProperty(k));
+
+		v = attrs[key];
+		if (is_array(v) && opts.stringifyArrays)
+			ret[k] = v.join(',');
+		else
+			ret[k] = v;
+		i = 1;
+	}
+
+	return opts.keysonly ? Object.keys(ret) : ret;
+}
+
+function is_array (val) {
+	return Object.prototype.toString.call(val) == '[object Array]';
+}
+
