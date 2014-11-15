@@ -1,11 +1,8 @@
 {
   "name": "mengene",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "repository": "tetsuo/mengene",
   "scripts": [
     "index.js"
-  ],
-  "dependencies": {
-    "jashkenas/underscore": "*"
-  }
+  ]
 }

@@ -1,7 +1,7 @@
 {
   "name": "mengene",
-  "version": "0.1.0",
-  "description": "mangle/unmangle property names.",
+  "version": "0.2.0",
+  "description": "compress/decompress property names.",
   "main": "index.js",
   "directories": {
     "test": "test"
@@ -14,8 +14,8 @@
     "url": "git://github.com/tetsuo/mengene.git"
   },
   "keywords": [
-    "mangle",
-    "unmangle",
+    "compress",
+    "decompress",
     "mengene"
   ],
   "author": "Onur Gunduz <ogunduz@gmail.com> (http://onurgunduz.com/)",
@@ -27,8 +27,5 @@
   "devDependencies": {
     "mocha": "^1.21.0",
     "should": "^4.0.4"
-  },
-  "dependencies": {
-    "underscore": "^1.6.0"
   }
 }
